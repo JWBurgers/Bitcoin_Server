@@ -8,3 +8,8 @@ Words and phrases are emphasized via boldface and italics. For instance, the phr
 ## Commands
 
 Commands are formatted in bold and monospace, and preceded by "$". The command "sudo shutdown" would, for example, look as follows: **`$ sudo shutdown`**.  
+
+
+## Key terms
+
+Key terms are emphasized via boldface. For instance, the term "bitcoind" would look as follows: **bitcoind**.
