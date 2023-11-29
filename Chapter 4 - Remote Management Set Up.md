@@ -48,10 +48,15 @@ Next, you can set the static IP address for your server’s network card. We wil
     - Gateway: 192.168.2.254 (this is your router's local address)
     - DNS: 192.168.2.254 (typically, the same as the router's local address)
     - Routes: "Automatic"
-* You can run the "Static profile" by double-clicking on it. You can leave the original, dynamic profile in place for convenience. If you ever have connection issues, you can revert back to it.  
-* Open the terminal and execute **`$ ip a`". You should see various network interfaces. The "lo" interface refers to the **loopback address**. You may have several other network interfaces listed. Only one interface, however, should be without the "NO-CARRIER" designation. It should be the Ethernet interface you just configured and have the same name (e.g., "enp1s0"). You should see the local IPv4 address you just set (e.g., "192.168.2.150").  
+* You can run the "Static profile" by double-clicking on it. You can leave the original, dynamic profile in place for convenience. If you ever have connection issues, you can revert back to it. However, do make sure you turn off the "Connect automatically" setting under the "Details" tab of this fallback connection profile. This just helps avoid using the wrong connection profile unintentionally.  
+* Open the terminal and execute **`$ ip a`". You should see various network interfaces. The "lo" interface refers to the **loopback address**. You may have several other network interfaces listed. Only one interface, however, should be without the "NO-CARRIER" designation. It should be the Ethernet interface you just configured and have the same name (e.g., "enp1s0"). You should see the local IPv4 address you just set (e.g., "192.168.2.150"). Your ethernet card now has a static IP address assigned to it. 
 
-Your ethernet card now has a static IP address assigned to it. 
+As a final check, carry out the following instructions:
+
+* **$ cd /etc**
+* **$ sudo cat resolve.conf**
+
+Make sure that you see the right nameserver listed here (192.168.2.254 in our example above). 
 
 
 ## Configuring your SSH server
@@ -85,7 +90,7 @@ Your managing computer now also has a static IP address. Next, we will change so
 * Save and exit the file. 
 * Record the port number you set for the SSH server application on your list of important information.
 
-There are numerous other security measures you can take with regards to your SSH configurations. For instance, you can also disable passwords alltogether and use SSH keys to enable your authentication. Though you should now be reasonably secure, I would recommend that you research SSH security more on your own.
+There are numerous other security measures you can take with regards to your SSH configurations. For instance, you can also disable passwords alltogether and use SSH keys to enable your authentication. Though you should now be reasonably secure, we would recommend that you research SSH security more on your own.
 
 
 ## State of your server records
@@ -137,7 +142,12 @@ Assuming that your custom SSH port is set at 16222 and your managing computer’
 
 All your network interfaces have a port 16222. This instruction tells ufw to allow inbound connections on any these ports, as long as they come from your managing computer. Given that we are only using a single ethernet interface, we could have technically restricted this further. But this would not really benefit us in any way. 
 
-Before we had altered the configuration file for the SSH daemon so that only connections from 192.168.2.200 to the admin profile would be accepted by the application. We have now further increased our security by not even letting such traffic through the software firewall. So the SSH daemon should now never even receive requests from other computers. 
+Before we had altered the configuration file for the SSH daemon so that only connections from 192.168.2.200 to the admin profile would be accepted by the application. We have now further increased our security by not even letting such traffic through the software firewall. So the SSH daemon should now never even receive requests from other computers than the one we have specified.
+
+If at any point you have made a mistake in setting the rules for your firewall, you can easily make deletions. These works as follows:
+
+* To delete a specific rule, first execute **$ sudo ufw status**. Find the number of the rule you want to delete, starting the counting from "1". To delete the specific rule number ***x***, then just execute **$ sudo ufw delete x**. 
+* To delete all rules, just execute **$ sudo ufw reset**. 
 
 
 ## Establishing a remote connection
