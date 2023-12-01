@@ -271,11 +271,11 @@ To analyze the connections to Bitcoind, execute the following command:
 
 This will return a JSON object with information about your peer connections. The less command ensures that you can scroll the results. 
 
-Each of your peers should have an "id" number. Each peer should also be described by a variable called "inbound", which receives "false" if it is an outbound connection and "true" otherwise. Any outbound connections over clearnet should have the following types of values for “addr” (the origin of the traffic), “addrbind” (the destination of the traffic), and “addrlocal” (the local source of the traffic):
+Each of your peers should have an "id" number. Each peer should also be described by a variable called "inbound", which receives "false" if it is an outbound connection and "true" otherwise. Any outbound connections over clearnet should have the following types of values for “addr” (the origin of the traffic), “addrbind” (where the traffic comes into your system), and “addrlocal” (the local source of the traffic):
 
 * **addr**: A public IP address and port, typically port "8333". The public IP is typically that of a home router behind which the other node sits. 
-* **addrbind**: The local network address on which your server receives data from the outbound peer (forwarded by the router). This will be a port dedicated to communication with the outbound node. 
-* **addrlocal**: The public IP address of your router and a communication port dedicated to the connection. This should standardly be the same port on which your local network address receives data.
+* **addrbind**: Where your server receives data from the outbound peer (forwarded by the router). This should be from your server's IP address with a port dedicated to communication with the outbound node. 
+* **addrlocal**: The public IP address of your router and a communication port dedicated to the connection. This should standardly be the same port on which your server receives data.
 
 As an example, you could see output with the following data:
 
@@ -283,15 +283,15 @@ As an example, you could see output with the following data:
 * "addrbind": "192.168.2.150:33220"
 * "addrlocal": "52.35.322.134:33220"
 
-Any outbound connections made by your Tor hidden service to another Tor hidden service will list the onion address of the counterparty for the "addr" variable. You will see a loopback address with a port for the "addrbind" variable. The "network" should also be listed as onion. As an example, you might see something like the following:
+Any outbound connections made by your Tor hidden service to another Tor hidden service will list the onion address of the counterparty for the "addr" variable. You will see a loopback address with a dedicated outbound port for the "addrbind" variable. The "network" should also be listed as "onion". As an example, you might see something like the following:
 
 * "addr": "zhlpzola3s8w7offksdl4r4zp2rtvm9nb3sosdvgnpos4ezgxxj4eiad.onion:8333",
 * "addrbind": "127.0.0.1:57410"
 * "network": "onion",
 
-For your inbound peers (inbound: “true”), you can look at the same variables. In the case of inbound peers over clearnet, you will usually see only the "addr" and "addrbind" fields listed, but with the same type of data as for outbound clearnet connections. Your "addrlocal" is namely always your router's public IP address with port as per your port forwarding specifications (standardly also 8333). While your outbound clearnet connections are all made directly to other nodes or (more typically) the routers behind which they sit, the nodes on the other side of these inbound clearnet connections can vary. Their traffic can come directly from them or their home router. It could also come via an ordinary Tor circuit or some othe proxy.  
+For your inbound peers (inbound: “true”), any connections over clearnet will come in at port 8333 on your server's local IP address. So if your local IP address is 192.168.2.150, you should see "addrbind" for them is "192.168.2.150:8333". While your outbound clearnet connections are all made directly to other nodes or (more typically) the routers behind which they sit, the nodes on the other side of these inbound clearnet connections can vary. Their traffic can come directly from them or their home router. It could also come via an ordinary Tor circuit or some othe proxy.  
 
-In the case of inbound connections via your Tor hidden service, you should see similar information for the "addr" and "addrbind" fields as for clearnet connections, but an "addrlocal" field that lists "127.0.0.1:8333". This indicates that you are receiving communications locally from the Tor service and not your router. 
+In the case of inbound connections via your Tor hidden service, you could see various "addr" and "addrbind" fields. If you see any connections that have "127.0.0.1:8334" as the "addrbind", then these are from inbound Tor hidden service connections. For inbound connections from regular Tor clients, you should see an "addrbind" field that lists "127.0.0.1:8333".   
 
 
 ## Cleaning up the configuration file
