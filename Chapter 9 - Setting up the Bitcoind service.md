@@ -1,6 +1,6 @@
 # Setting up the Bitcoind service
 
-You currently know about the root and admin accounts on your system. But it may surprise you to learn that you, in fact, have many other accounts. To see them, execute the following two instructions:
+You currently know about the root and administrator accounts on your system. But it may surprise you to learn that you, in fact, have many other accounts. To see them, execute the following two instructions:
 
 * **`$ cd /etc`**
 * **`$ cat passwd`**
@@ -20,26 +20,24 @@ The last command will show you all running processes and their respective accoun
 
 Now there are some nuances and exceptions to this practice of running Linux services via dedicated service accounts. Take as an example NGINX, pronounced as “engine X”, a popular web server application which also can be utilized for a variety of other purposes, including as a reverse proxy and load balancer. The NGINX service actually is setup to work (partially) with the root account. While this would a terrible idea for Bitcoind, it is safe to do for NGINX. 
 
-In contrast to services like Tor and NGINX, Bitcoin Core does not automatically create a service with a dedicated service account for Bitcoind upon installation. So you will have to set all of this up on your own for running Bitcoind as a service. We will  start in the next section with creating the service account. We will then make the necessary ownership changes for this service account in our directories and files. Finally, we will create the service file. 
+In contrast to services like Tor and NGINX, Bitcoin Core does not automatically create a service with a dedicated service account for Bitcoind upon installation. So you will have to set all of this up on your own for running Bitcoind as a service. We will start in the next section with creating the service account. We will then make the necessary ownership changes for this service account in our directories and files. Finally, we will create the service file. 
 
 
 ## Creating a service account
 
-You should name a service account for Bitcoind so that it is congruent with the application name. For bitcoind, you can choose something like “bitcoind”, “bitcoin”, or “bitcoin-core”. For the instructions, we will assume you have set it as “bitcoind”. 
-
-To create the service account called "bitcoind", execute the following instruction:
+You should name a service account for Bitcoind so that it is congruent with the application name. For bitcoind, you can choose something like “bitcoind”, “bitcoin”, or “bitcoin-core”. For the instructions, we will assume you will set it as “bitcoind”. To create the service account called "bitcoind", execute the following instruction:
 
 * **`$ sudo useradd --shell /usr/sbin/nologin --system -M bitcoind`**
 
-The shell option specifies the default shell for the account. In this case, you have pointed it to a file that will prevent logging into the bitcoind account. If you attempt a log in from your terminal window in the same way as for the administrator or root account, you will receive a message that “This account is currently not available”. This setting offer an extra layer of protection and is typical for service accounts. 
+The **`shell`** option specifies the default shell for the account. In this case, you have pointed it to a file that will prevent logging into the bitcoind account. If you attempt a log in from your terminal window in the same way as for the administrator or root account, you will receive a message that “This account is currently not available”. This setting offer an extra layer of protection and is typical for service accounts. 
 
-The system option in the instruction above ensures that the bitcoind account recieves both a user and a group ID that is lower than 1000. These IDs correspond to the third and fourth descriptors in the passwd file in the /etc directory (you can have a look now). 
+The **`system`** option in the instruction above ensures that the bitcoind account recieves both a user and a group ID that is lower than 1000. These IDs correspond to the third and fourth descriptors in the passwd file in the /etc directory (you can have a look now). 
 
 Accounts from 1000 upwards are intended for user accounts, while those between 1 and 1000 are intended for service accounts. While there is no technical difference between service and user accounts, the numbering system helps with identification. The root account, also a user account, is unique and receives both a user and group ID of 0.  
 
-The last option (-M) in the instruction above specifies that the new account has ***no*** home directory. This is generally recommended for service accounts. By default, Bitcoind will search for a configuration file in the home directory of the user owner. As the bitcoind service account will be the user owner, Bitcoind will by default search for a configuration file in /home/bitcoind/.bitcoin. But as bitcoind has no home directory, you will have to specify an alternative location for the configuration file in the system service file.
+The last option (**`-M`**) in the instruction above specifies that the new account has ***no*** home directory. This is generally recommended for service accounts. By default, Bitcoind will search for a configuration file in the home directory of the user owner. As the bitcoind service account will be the user owner, Bitcoind will by default search for a configuration file in /home/bitcoind/.bitcoin. But as bitcoind has no home directory, you will have to specify an alternative location for the configuration file in the system service file.
  
-If you now look into the passwd file within the /etc directory, you should see the bitcoind service account at the end of the list. 
+If you now look into the passwd file within the **`/etc`** directory, you should see the **`bitcoind`** service account at the end of the list. 
 
 
 ## Ownership changes
@@ -48,17 +46,17 @@ Any Linux account generally belongs to a **primary group** of the same name (unl
 
 Group membership is important for access to directories and files. Every Linux file and directory will have both an account owner and a group owner. And you can specify the rights of both the account and group owner separately. If an account belongs to a secondary group that is the owner of a particular file or directory, then that account will have the rights as specified for the group.
 
-We will assign various directories to have the bitcoind account as the account owner and the bitcoind group as the group owner. But as we will generally navigate our system using the administrator account, we will need to ensure that it is added to the bitcoind group. Proceed as follows:
+We will assign various directories to have the **`bitcoind`** account as the account owner and the **`bitcoind`** group as the group owner. But as we will generally navigate our system using the administrator account, we will need to ensure that it is added to the bitcoind group. Proceed as follows:
 
 * **`$ sudo usermod -a -G bitcoind administrator`**
 
 You can verify that this instruction worked by executing **`$ groups administrator`**. You should see the bitcoind group listed as one of the secondary groups for the administrator account (the primary group being the administrator group). 
 
-Note that the bitcoind account only belongs to a primary group, namely bitcoind. We are not adding the bitcoind account to any secondary groups, as we did when creating the administrator account. This is because the former account is merely for running a service. Hence, we want to restrict what it can access as much as possible.  
+Note that the **`bitcoind`** account only belongs to a primary group, namely **`bitcoind`**. We are not adding the **`bitcoind`** account to any secondary groups, as we did when creating the **`administrator`** account. This is because the former account is merely for running a service. Hence, we want to restrict what it can access as much as possible.  
 
-By default, all the binaries for the Bitcoin Core directory will have been installed with the root account as an account owner and the root group as the group owner. In addition, permissions will have automatically been set for the root account, the root group, and everyone else. You can see all this information by executing <ls -l> in the btc-server directory. 
+By default, all the binaries for the Bitcoin Core directory will have been installed with the **`root`** account as an account owner and the **`root`** group as the group owner. In addition, permissions will have automatically been set for the **`root`** account, the **`root`** group, and everyone else. You can see all this information by executing **`$ ls -l`** in the **`btc-server`** directory. 
 
-In order to run Bitcoind from the bitcoind service account, you need to make changes to these settings. Within the btc-server directory, first execute the following instruction:
+In order to run Bitcoind from the **`bitcoind`** service account, you need to make changes to these settings. Within the **`btc-server`** directory, first execute the following instruction:
 
 * **`$ sudo chown -R bitcoind bitcoin-core`**
 
@@ -87,16 +85,16 @@ We will not sugarcoat anything: creating your own service files for applications
 
 If you have no experience with service files, we recommend you first become familiar with some of the basics in order to follow the discussion in this section better. There are many blog posts, articles, and videos online that can give you a good introduction.<sup>[1](#footnote1)</sup>
 
-Once you understand some of the basics of service files, you can start by creating an empty Bitcoind service file in the /etc/systemd/system directory, where all administrator-created service files are typically placed. Proceed as follows:
+Once you understand some of the basics of service files, you can start by creating an empty Bitcoind service file in the **`/etc/systemd/system`** directory, where all administrator-created service files are typically placed. Proceed as follows:
 
-* Enter into the /etc/systemd/system directory
+* Enter into the **`/etc/systemd/system`** directory
 * Execute the following instruction: **`$ sudo touch bitcoind.service>`**
 
-The specifications we would recommend for the service file are listed below. They are based on the template offered in the Bitcoin Core repository.<sup>[2](#footnote2)</sup> We did make some minor alterations. Our main philosophy is to just put what is absolutely necessary in the service file. Anything that is not strictly necessary is left out. 
+The specifications we would recommend for the service file are listed below. They are based on the template offered in the Bitcoin Core repository.<sup>[2](#footnote2)</sup> We did make some minor alterations. Our main philosophy is to only put what is absolutely necessary in the service file. Anything that is not strictly necessary has been left out. 
 
 Importantly, this service file is sensitive in its formatting (e.g., capitalization, spacing, tabs). After copying the contents below into your own Bitcoind service file, make sure your remove any excess spaces and tabs, so that everything looks exactly as below. 
 
-Pay attention particularly to the ExecStart item when copying. All the options—"daemon", "pid", and "conf"—should all be on a single continuous line. Also note that the items in brackets—"Unit", "Service", and "Target"—should be highlighted in green. If not, it is likely due to excess spaces or tabs. 
+Pay attention particularly to the ExecStart item when copying. All the options—**`daemon`**, **`pid`**, and **`conf`**—should all be on a single continuous line. Also note that the items in brackets—**`[Unit]`**, **`[Service]`**, and **`[Target]`**—should be highlighted in green. If not, it is likely due to excess spaces or tabs. 
 
 **Bitcoin Core service file**
 
@@ -147,28 +145,28 @@ Some of the configuration options in the service file require fairly advanced kn
 
 Below we explain the meaning of the configuration options in the service file.  
 
-- ***Description=Bitcoin Daemon***: This is just a description for the service you are running.
-- ***After=network-online.target***: This option means Bitcoind will not start until your network connections are up. What that means exactly depends on your network management software. Usually, "up" means that you have a routable IP address.  
-- ***ExecStart=btc-server/bitcoin-core/bin/bitcoind***: This configuration option points to the starting process for the Bitcoind service. As you made bitcoind the owner of the bitcoin-core directory earlier, the service account should have no issues launching this process. This option was also accompanied by three flags. 
-    - The "daemon" option instructs Bitcoind that it needs to run as a background service which can accept instructions. If you do not specify this option in either the service file or the configuration file, Bitcoind will not activate as a service. The choice on where to put the flag does not really matter.   
-    - The "pid" option creates a PID file for Bitcoind, or a "process identification" file, in the specified location, namely /run/bitcoin/bitcoind.pid.<sup>[4](#footnote4)</sup> Without this specification, Bitcoind would attempt to create the file in the bitcoin-core home directory, which does not exist. When running Bitcoind as a service, you need to specifically flag this option in the service file. The service will not start up if you merely flag it in the configuration file. 
-    - By default the configuration file for Bitcoind is placed in the home directory (specifically, in the directory ~/.bitcoin). But the bitcoind service account has no home directory. So the configuration file needs an alternative location. It is typical to place it within the /etc directory. 
-    - If you look at the Bitcoin Core template for the service file, it also includes a location for the data directory (datadir=/var/lib/bitcoind). We decided not to include this option in the service, but in the configuration file. In any case, you would not want to copy Bitcoin Core’s template exactly, as your data directory will need to point to your btc-server directory.
+- ***Description=Bitcoin Daemon***: This is just a description for the service.
+- ***After=network-online.target***: This ensures Bitcoind will not start until your network connections are up. What that means exactly depends on your network management software. Usually, "up" means that you have a routable IP address.  
+- ***ExecStart=/btc-server/bitcoin-core/bin/bitcoind***: This configuration option points to the starting process for the Bitcoind service. As you made bitcoind the owner of the bitcoin-core directory earlier, the service account should have no issues launching this process. This option was also accompanied by three flags. 
+    - The **`daemon`** option instructs Bitcoind that it needs to run as a background service which can accept instructions. If you do not specify this option in either the service file or the configuration file, Bitcoind will not activate as a service. The choice on where to put the flag does not really matter.   
+    - The **`pid`** option creates a PID file for Bitcoind, or a "process identification" file, in the specified location, namely **`/run/bitcoin/bitcoind.pid`**.<sup>[4](#footnote4)</sup> Without this specification, Bitcoind would attempt to create the file in the home directory for the **`bitcoind`** account, which does not actually exist. When running Bitcoind as a service, you need to specifically flag this option in the service file. The service will not start up if you merely flag it in the configuration file. 
+    - By default the configuration file for Bitcoind is placed in the home directory for the **`bitcoind`** account (specifically, in the directory ~/.bitcoin). But the **`bitcoind`** service account has no home directory. So the configuration file needs an alternative location. It is typical to place it within the **`/etc`** directory. 
+    - If you look at the Bitcoin Core template for the service file, it also includes a location for the data directory (i.e., a **`datadir`** option). We decided not to include this option in the service file, but in the configuration file. In any case, you would not want to copy Bitcoin Core’s template exactly, as your data directory will need to point to your **`btc-server`** directory.
 - ***Type=forking***: This option means that the starting process of the service, as defined in ExecStart, will exit at some point and that the main process of the service is actually a child process of that defined by ExecStart. The service manager will consider the Bitcoind service started when the parent process exits.
-- ***PIDFile=/run/bitcoind/bitcoind.pid***: Any time you specify the type of a service as "forking" in the service file (as we did above), it is recommended that you also specify the location for the PID file. This file contains metadata about the process on your system. 
+- ***PIDFile=/run/bitcoind/bitcoind.pid***: Any time you specify the type of a service as **`forking`** in the service file (as we did above), it is recommended that you also specify the location for the PID file. This file contains metadata about the process on your system. 
 - ***Restart=on-failure***: This option ensures that the Bitcoind service will restart on its own in case of failure.
-- ***TimeoutStartSec=infinity***: This option specifies how long systemd should try to start up the service before considering the start up a failure and shutting it down. The selection of "infinity" here implies that this option is turned off for Bitcoind.
+- ***TimeoutStartSec=infinity***: This option specifies how long systemd should try to start up the service before considering the start up a failure and shutting it down. The selection of **`infinity`** here implies that this option is turned off for Bitcoind.
 - ***TimeoutStopSec=600***: This option specifies how long systemd should wait for a service to stop before forcibly shutting it down. The selection of "600" indicates that systemd will wait 10 minutes on the bitcoind service to stop properly. 
 - ***PermissionsStartOnly=true***: This option means that the permissions for the bitcoind service account are only applied to the ExecStart process.
-- ***ExecStartPre=/bin/chgrp bitcoind /etc/bitcoin***: This process executes before ExecStart. It ensures that the configuration file, which we will place in this directory, is accessible to the users of the bitcoind group (i.e., bitcoind, administrator, and root). 
+- ***ExecStartPre=/bin/chgrp bitcoind /etc/bitcoin***: This process executes before ExecStart. It ensures that the configuration file, which we will place in this directory, is accessible to the users of the **`bitcoind`** group (i.e., **`bitcoind`**, `**administrator`**, and `**root`**). 
 - ***User=bitcoind***: This specifies the service account for the Bitcoind application.
 - ***Group=bitcoind***: This specifies the user group for the Bitcoind application.
 - ***RuntimeDirectory=bitcoind***: This specifies a particular runtime directory to be created at the startup of your service. This directory will include your PID file. The directory is automatically removed when the service closes.
-- ***RuntimeDirectoryMode=0710***: This specifies the permissions regarding the runtime directory /run/bitcoind. Standardly, only the root user has the ability to write anywhere in the /run directory. You are making an exception here for the bitcoind user in /run/bitcoind, who has full permissions. Anyone in the bitcoind user group has execution rights. Anyone else has no rights regarding the directory.
+- ***RuntimeDirectoryMode=0710***: This specifies the permissions regarding the runtime directory **`/run/bitcoind`**. Standardly, only the **`root`** account has the ability to write anywhere in the `**/run`** directory. You are making an exception here for the **`bitcoind`** service account in **`/run/bitcoind`**, who has full permissions. Anyone in the **`bitcoind`** group has execution rights. Anyone else has no rights regarding the directory.
 - ***StateDirectory=bitcoind***: This specifies a particular state directory to be created at startup of the service. This includes data that is modified by Bitcoind while running.
-- ***StateDirectoryMode=0710***: This specifies the permissions regarding the state directory. The owner of the service has full permissions. Anyone in the bitcoind user group has execution rights. Anyone else has no rights regarding the directory.
-- ***PrivateTmp=true***: The /tmp directory is where you system stores temporary files. This option creates a unique /tmp directory for the Bitcoind service, which other users and services cannot view.
-- ***ProtectSystem=full***: This option makes the /usr, /boot, /efi, and /etc directories read-only for the service. The exception is the /etc/bitcoin directory as defined by ExecStartPre above.
+- ***StateDirectoryMode=0710***: This specifies the permissions regarding the state directory. The owner of the service has full permissions. Anyone in the **`bitcoind`** group has execution rights. Anyone else has no rights regarding the directory.
+- ***PrivateTmp=true***: The **`/tmp`** directory is where you system stores temporary files. This option creates a unique **`/tmp`** directory for the Bitcoind service, which other users and services cannot view.
+- ***ProtectSystem=full***: This option makes the **`/usr`**, **`/boot`**, **`/efi`**, and **`/etc`** directories read-only for the service. The exception is the **`/etc/bitcoin`** directory as defined by ExecStartPre above.
 - ***ProtectHome=true***: This option ensures that the service cannot read or write to the home directory. This is typically recommended for services. We did not create a home directory for the service account, so this is probably redundant given our setup. 
 - ***NoNewPrivileges=true***: This stops the startup process of the service and any child processes from obtaining new privileges.
 - ***PrivateDevices=true***: This creates a private device file for the service when you start it up.
