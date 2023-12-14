@@ -105,7 +105,7 @@ At this point, you should have a fairly extensive record of data about your serv
 * Static IPv4 address of your managing computer: 192.168.2.200
 * SSH server port: 16022
 
- If you any of your values diverge from those above, ***you need to adapt the subsequent instructions accordingly***.
+If you any of your values diverge from those above, ***you need to adapt the subsequent instructions accordingly***.
 
 
 ## Setting up a firewall
@@ -158,7 +158,7 @@ You can configure the booting into CLI as follows:
 * Execute **`$sudo systemctl set-default multi-user.target`**
 * Execute **`$ sudo reboot`**
 
-You should now see the ability to log in from the command line. First enter "administrator" after the "btc-server login: " prompt. Then enter your administrator account password. You should now be logged in. If your system ever reboots, it will again restart in command line mode.  
+You should now see the ability to log in from the command line. First enter **`administrator`** after the **`btc-server login: `** prompt. Then enter your **`administrator`** account password. You should now be logged in. If your system ever reboots, it will again restart in command line mode.  
 
 Next, you need to install an application called PuTTy on your managing computer. This is a client-side application that allows access to other computers using the secure shell protocol. (You could also just log into your Bictoin server from the Windows command prompt or Powershell if you wish.) Proceed as follows:
 
@@ -171,7 +171,7 @@ Next, you need to install an application called PuTTy on your managing computer.
 Logging into your Bitcoin server is now a piece of cake. Take the following steps:  
 
 * Launch PuTTy on your managing computer.
-* On the top of the screen, you should see a text box for “Host name”.
+* On the top of the screen, you should see a text box for **`Host name`**.
 * Type in the static IP address for your Bitcoin server that we created earlier: 192.168.2.150.  
 * Ensure that the port number is set to the SSH port number: 16222. It should not be port “22”, the default value.  
 * Ensure that the connection type is set to “SSH.”  
@@ -181,6 +181,8 @@ Logging into your Bitcoin server is now a piece of cake. Take the following step
 * You should now be logged into your Bitcoin server remotely.
 
 If your screen did not show the login prompt (even after waiting a few moments), it really can only be one of three problems. First, you have not entered the right local IP address for your Bitcoin server. It could be that you mistyped the address. Second, you have not specified the correct port number. Third, either your own computer or your Bitcoin server is not online. This should help you troubleshoot any problems. 
+
+Instead of finding your server by the static IP address, you can also use the server's **`hostname`**. In that case, you should replace **`192.168.2.150`** by **`btc-server.local`** when prompted for the **`Host name`** by PuTTy.
 
 You are now ready to start controlling your Bitcoin server remotely. To shut down your server from the managing computer's terminal window execute **`$ sudo shutdown`**. As you have already seen earlier, you can reboot with the **`$ sudo reboot`** instruction.
 

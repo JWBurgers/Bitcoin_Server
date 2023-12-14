@@ -1,6 +1,6 @@
 # Configuring and run Bitcoind
 
-In the previous two chapters, we have built Bitcoin Core from the source code and set up the Bitcoind service. In this chapter, we will first set some general configuration options and ensure that we can run Bitcoind as a service. We will, then, ensure that we can issue commands to Bitcoind using the Bitcoin-cli tool. Finally, we will configure Bitcoind to accept both clearnet and hidden service outbound and inbound connections as discussed in *Chapter 7*. 
+In the previous two chapters, we have built Bitcoin Core from the source code and set up the Bitcoind service. In this chapter, we will first set some general configuration options and ensure that we can run Bitcoind as a service. We will, then, ensure that we can issue commands to Bitcoind using the Bitcoin-cli tool. Finally, we will configure Bitcoind to accept both inbound and outbound, clearnet and Tor hidden service connections, as discussed in *Chapter 7*. 
 
 
 ## General configurations for Bitcoind
@@ -31,7 +31,7 @@ Next, you need to create the bitcoin-data directory, which you have just specifi
 
 * **`$ sudo mkdir bitcoin-data`**
 
-You should now have both a "bin" and a "bitcoin-data" directory within the bitcoin-core directory. Make sure that this new bitcoin-data directory is also controlled by the **`bitcoind`** service account and group, and not the **`root`** account and group, by executing the following instructions: 
+You should now have both a **`bin`** and a **`bitcoin-data`** directory within the **`bitcoin-core`** directory. Make sure that this new **`bitcoin-data`** directory is also controlled by the **`bitcoind`** service account and group, and not the **`root`** account and group, by executing the following instructions: 
 
 * **`$ sudo chown bitcoind bitcoin-data`**
 * **`$ sudo chgrp bitcoind bitcoin-data`**
@@ -53,7 +53,7 @@ Bitcoind should now start and just run in the background. It will start automati
 
 * **`$ sudo systemctl status bitcoind`**
 
-The output should tell you that the bitcoind service is active (highlighted in green). If not, you may have some complicated troubleshooting ahead of you. In case the service has failed to start, you should execute **`$ sudo journalctl -xeu bitcoind.service`**. The output will give you some indication of where the mistake might be. It is likely one of the following possibilities: 
+The output should tell you that the bitcoind service is **`active (running)`** highlighted in green. If not, you may have some complicated troubleshooting ahead of you. In case the service has failed to start, you should execute **`$ sudo journalctl -xeu bitcoind.service`**. The output will give you some indication of where the mistake might be. It is likely one of the following possibilities: 
 
 * You may have made a formatting mistake with the Bitcoind service file in the previous chapter (**`bitcoind.service`** in the `**/etc/systemd/system directory`**). Make sure you have no capitalization, spelling, or spacing errors anywhere in the file.
 * You may have also set particular file or directory paths in the wrong way. Ensure that every file and directory path is correct and starts with the root directory ("/"). 
@@ -65,7 +65,7 @@ In case you have found one or more mistakes and fixed them, you should execute t
 * **`$ sudo systemctl daemon-reload`**
 * **`$ sudo systemctl start bitcoind`**
 
-You can again check to see if everything is working by executing **`$ sudo systemctl status bitcoind`**. Only if you see “active” highlighted in green is the service working properly.
+You can again check to see if everything is working by executing **`$ sudo systemctl status bitcoind`**. Only if you see **`active`** highlighted in green is the service working properly.
 
 If you are still running into problems at this point, the problem is probably still one of those listed above or a combination of them. As it's difficult to say anything more about the possible issues generally, you will have to start troubleshooting on your own. (You can use the the **`$ sudo journalctl -xeu bitcoind.service`** instruction to help you.)
 
@@ -73,7 +73,7 @@ A service file is one type of systemd unit file. To see the status of all system
 
 * **`$ sudo systemctl list-units`**
 
-Once you have the Bitcoind service running, you should see that it loaded successfully (as indicated by “loaded” under the LOAD column), and that it is “active” and “running”. The latter two options respectively mean the configuration options for the service file were successfully executed, and that the unit is running one or more active processes. 
+Once you have the Bitcoind service running, you should see that it loaded successfully (as indicated by “loaded” under the **`LOAD`** column), and that it is **`active`** and **`running`**. The latter two options respectively mean the configuration options for the service file were successfully executed, and that the unit is running one or more active processes. 
 
 In the same section as for Bitcoind, you should also see information about the SSH, Tor, Fail2ban, and (possibly) Log2ram services that you have enabled at earlier points in this guide. 
 
@@ -90,15 +90,15 @@ As this log file can become very large, you will want to use the **`tail`** comm
 
 This will show you operations that have been performed by Bitcoind, including obtaining new blocks, finding peers, loading configuration options, and so on. 
 
-If you scroll upwards, you might at some point see the following line: “Bitcoin Core version v25.0 (release build)”. This is the first line Bitcoind outputs when it starts running. If you cannot find this line, it means Bitcoind has already performed too many operations for you to see its starting point with the tail instruction above. 
+If you scroll upwards, you might at some point see the following line: **`Bitcoin Core version v25.0 (release build)`**. This is the first line Bitcoind outputs when it starts running. If you cannot find this line, it means Bitcoind has already performed too many operations for you to see its starting point with the tail instruction above. 
 
 At this point, you should just let Bitcoind synchronize with the network. This synchronization process can take a substantial amount of time. If you have a decent system and Internet connection, it should probably be ready in a day or so. There are some methods that you can deploy to shorten the waiting time. But unless you are in some urgent rush, we would just suggest you patiently wait out the process rather than complicate matters further.   
 
-In order to verify that you have synchronized, just check the Bitcoind log file at any time, using the following instruction:
+In order to verify that you have synchronized the Block Chain, just check the Bitcoind log file at any time, using the following instruction:
 
 * **`$ sudo tail -n 20 debug.log`**
 
-The last twenty lines of the log file will be output and the activities are likely to be related to the discovery of new blocks. Look for the last line that says “UpdateTip”, which concerns the discovery of a new valid block by your node. Moving to the right on the line, you will see the timestamp associated with it. You are synchronized with the network if the timestamp is very recent, typically from within the last ten minutes (though it may take longer sometimes).   
+The last twenty lines of the log file will be output and the activities are likely to be related to the discovery of new blocks. Look for the last line that says **`UpdateTip`**, which concerns the discovery of a new valid block by your node. Moving to the right on the line, you will see the timestamp associated with it. You are synchronized with the network if the timestamp is very recent, typically from within the last ten minutes (though it may take longer sometimes).   
 
 
 ## Using Bitcoin-CLI
@@ -190,7 +190,7 @@ Let's now configure our inbound connections. We will first need to ensure that o
 
 * **`$ sudo ufw allow to any port 8333`**
 
-If you now execute **`$ sudo ufw status`**, you should see that port 8333 accepts requests formatted according to both IPv4 and IPv6 standards. You can check that you completed this step correctly by opening up powershell on your managing computer and executing the following command: **`$ Test-Netconnection 192.168.2.150 -Port 8333`**. It should state "true" for "TCPtestsucceeded".
+If you now execute **`$ sudo ufw status`**, you should see that port 8333 accepts requests formatted according to both IPv4 and IPv6 standards. You can check that you completed this step correctly by opening up powershell on your managing computer and executing the following command: **`$ Test-Netconnection 192.168.2.150 -Port 8333`**. It should state **`true`** for **`TCPtestsucceeded`**.
 
 You now need to ensure that your router will listen for inbound connections on its own port 8333 and forwards the traffic to your server. While each router will work differently, the general steps are as follows:
 

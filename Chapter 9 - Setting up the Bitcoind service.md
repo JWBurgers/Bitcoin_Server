@@ -1,31 +1,31 @@
 # Setting up the Bitcoind service
 
-You currently know about the root and administrator accounts on your system. But it may surprise you to learn that you, in fact, have many other accounts. To see them, execute the following two instructions:
+You currently know about the **`root`** and **`administrator`** accounts on your system. But it may surprise you to learn that you, in fact, have many other accounts. To see them, execute the following two instructions:
 
 * **`$ cd /etc`**
 * **`$ cat passwd`**
 
 Each line in this file describes an account on your system. Every line has seven descriptors which are seperated by colons. The very first descriptor on each line refers to the account name. 
 
-The accounts besides root and administrator are for Linux services. These Linux services include **system services**, which are related to the functioning of your operating system, as well as **non-system services** such as Tor. We call these accounts for Linux services specifically **service accounts**, in order to distinguish them from human **user accounts** such as admin and root.  
+The accounts besides **`root`** and **`administrator`** are for Linux services. These Linux services include **system services**, which are related to the functioning of your operating system, as well as **non-system services** such as Tor. We call these accounts for Linux services specifically **service accounts**, in order to distinguish them from human **user accounts** such as admin and root.  
 
 Many services you run on a Linux system will need to be run from a service account dedicated uniquely to it. This general practice has both security and operational benefits, though the extent of these benefits depends on how well your service account and **service file**, a configuration file for the service, are set up. 
 
-In the previous chapter, you learned that Tor automatically creates a service file for the application. What we did not discuss at the time is that the Tor installation also automatically created an account called **debian-tor** for running the service. To see this account, execute the following instructions:
+In the previous chapter, you learned that Tor automatically creates a service file for the application. What we did not discuss at the time is that the Tor installation also automatically created an account called **`debian-tor`** for running the service. To see this account, execute the following instructions:
 
 * **`$ sudo apt install htop`**
 * **`$ htop`**
 
-The last command will show you all running processes and their respective accounts. Somewhere in the list, you should see the Tor application running under the service account debian-tor. 
+The last command will show you all running processes and their respective accounts. Somewhere in the list, you should see the Tor application running under the service account **`debian-tor`**. 
 
-Now there are some nuances and exceptions to this practice of running Linux services via dedicated service accounts. Take as an example NGINX, pronounced as “engine X”, a popular web server application which also can be utilized for a variety of other purposes, including as a reverse proxy and load balancer. The NGINX service actually is setup to work (partially) with the root account. While this would a terrible idea for Bitcoind, it is safe to do for NGINX. 
+Now there are some nuances and exceptions to the practice of running Linux services from dedicated service accounts. Take as an example NGINX, pronounced as “engine X”, a popular web server application which also can be utilized for a variety of other purposes. We will use this application later as a reverse proxy. The NGINX service actually is setup to work (partially) with the root account. While this would a terrible idea for Bitcoind, it is safe to do for NGINX. 
 
-In contrast to services like Tor and NGINX, Bitcoin Core does not automatically create a service with a dedicated service account for Bitcoind upon installation. So you will have to set all of this up on your own for running Bitcoind as a service. We will start in the next section with creating the service account. We will then make the necessary ownership changes for this service account in our directories and files. Finally, we will create the service file. 
+In contrast to services like Tor and NGINX, Bitcoin Core does not automatically create a service with a dedicated service account for Bitcoind upon installation. So you will have to set all of this up on your own. We will start in the next section with creating the service account. We will then make the necessary permission changes for this service account in our directories and files. Finally, we will create the service file. 
 
 
 ## Creating a service account
 
-You should name a service account for Bitcoind so that it is congruent with the application name. For bitcoind, you can choose something like “bitcoind”, “bitcoin”, or “bitcoin-core”. For the instructions, we will assume you will set it as “bitcoind”. To create the service account called "bitcoind", execute the following instruction:
+You should name a service account for Bitcoind so that it is congruent with the application name. For bitcoind, you can choose something like "bitcoind”, “bitcoin”, or “bitcoin-core”. For the instructions, we will assume you will set it as **`bitcoind`**. To create the service account called **`bitcoind`**, execute the following instruction:
 
 * **`$ sudo useradd --shell /usr/sbin/nologin --system -M bitcoind`**
 
@@ -35,24 +35,24 @@ The **`system`** option in the instruction above ensures that the bitcoind accou
 
 Accounts from 1000 upwards are intended for user accounts, while those between 1 and 1000 are intended for service accounts. While there is no technical difference between service and user accounts, the numbering system helps with identification. The root account, also a user account, is unique and receives both a user and group ID of 0.  
 
-The last option (**`-M`**) in the instruction above specifies that the new account has ***no*** home directory. This is generally recommended for service accounts. By default, Bitcoind will search for a configuration file in the home directory of the user owner. As the bitcoind service account will be the user owner, Bitcoind will by default search for a configuration file in /home/bitcoind/.bitcoin. But as bitcoind has no home directory, you will have to specify an alternative location for the configuration file in the system service file.
+The last option (**`-M`**) in the instruction above specifies that the new account has ***no*** home directory. This is generally recommended for service accounts. By default, Bitcoind will search for a configuration file in the home directory of the user owner. As the bitcoind service account will be the user owner, Bitcoind will by default search for a configuration file in **`/home/bitcoind/.bitcoin`**. But as bitcoind has no home directory, you will have to specify an alternative location for the configuration file in the system service file.
  
-If you now look into the passwd file within the **`/etc`** directory, you should see the **`bitcoind`** service account at the end of the list. 
+If you now look into the **`passwd`** file within the **`/etc`** directory, you should see the **`bitcoind`** service account at the end of the list. 
 
 
-## Ownership changes
+## Permission changes
 
 Any Linux account generally belongs to a **primary group** of the same name (unless you specifically allocated it to another primary group). In addition, it may belong to any number of **secondary groups**. 
 
-Group membership is important for access to directories and files. Every Linux file and directory will have both an account owner and a group owner. And you can specify the rights of both the account and group owner separately. If an account belongs to a secondary group that is the owner of a particular file or directory, then that account will have the rights as specified for the group.
+Group membership is important for access to directories and files. Every Linux file and directory will have both an account owner and a group owner. And you can specify the rights of both the account and group owner separately. Suppose that a particular account belongs to certain group. If that group is the owner of a particular file or directory, then that account will have the rights as specified for the group.
 
-We will assign various directories to have the **`bitcoind`** account as the account owner and the **`bitcoind`** group as the group owner. But as we will generally navigate our system using the administrator account, we will need to ensure that it is added to the bitcoind group. Proceed as follows:
+We will assign various directories to have the **`bitcoind`** account as the account owner and the **`bitcoind`** group as the group owner. But as we will generally navigate our system using the **`administrator`** account, we will need to ensure that the **`administrator`** is added to the **`bitcoind group`**. Proceed as follows:
 
 * **`$ sudo usermod -a -G bitcoind administrator`**
 
-You can verify that this instruction worked by executing **`$ groups administrator`**. You should see the bitcoind group listed as one of the secondary groups for the administrator account (the primary group being the administrator group). 
+You can verify that this instruction worked by executing **`$ groups administrator`**. You should see the **`bitcoind`** group listed as one of the secondary groups for the **`administrator`** account (the primary group being the **`administrator`** group). 
 
-Note that the **`bitcoind`** account only belongs to a primary group, namely **`bitcoind`**. We are not adding the **`bitcoind`** account to any secondary groups, as we did when creating the **`administrator`** account. This is because the former account is merely for running a service. Hence, we want to restrict what it can access as much as possible.  
+Note that the **`bitcoind`** account only belongs to the primary group, namely **`bitcoind`**. We are not adding the **`bitcoind`** account to any secondary groups, as we did when creating the **`administrator`** account. This is because the former account is merely for running a service. Hence, we want to restrict what it can access in our system as much as possible.  
 
 By default, all the binaries for the Bitcoin Core directory will have been installed with the **`root`** account as an account owner and the **`root`** group as the group owner. In addition, permissions will have automatically been set for the **`root`** account, the **`root`** group, and everyone else. You can see all this information by executing **`$ ls -l`** in the **`btc-server`** directory. 
 
@@ -60,15 +60,15 @@ In order to run Bitcoind from the **`bitcoind`** service account, you need to ma
 
 * **`$ sudo chown -R bitcoind bitcoin-core`**
 
-This changes the owner of the Bitcoin Core directory and all its contents from the root account to the bitcoind account. Next, you need to change the group owner of the directory and all its contents with the following instruction:
+This changes the owner of the Bitcoin Core directory and all its contents from the **`root`** account to the **`bitcoind`** account. Next, you need to change the group owner of the directory and all its contents with the following instruction:
 
 * **`$ sudo chgrp -R bitcoind bitcoin-core`**
 
 Finally, we need to specify the permissions for the account owner, the group owner, and everyone else regarding the Bitcoin Core directory and all its contents. Linux permissions are described by three categories of rights: read (r), write (w), and execution (x) privileges. We need to set the permissions as follows:
 
-* The account owner of the Bitcoin Core directory, the bitcoind account, should have read, write, and execution privileges to the directory. The root account automatically has the same privileges as the owner. 
-* The group owner of the Bitcoin Core directory, the bitcoind group, has two members: the bitcoind service account and the administrator account. As the bitcoind service account already has all rights to the directory as an account owner, the specification of the rights for the group owner does not impact it. These rights, however, will matter to the administrator account. As you will want to be able to navigate the Bitcoin Core directory from your administrator account, you need to give the bitcoind group read and execution privileges to the directory. We will not set writing rights for the administrator account, as they are not really needed.  
-* Finally, any account that is not root, administrator, or bitcoind has no real business in the Bitcoin Core directory. Hence, other accounts should have no read, write, or execution permissions. 
+* The account owner of the Bitcoin Core directory, the **`bitcoind`** account, should have read, write, and execution privileges to the directory. The **`root`** account automatically has the same privileges as the owner. 
+* The group owner of the Bitcoin Core directory, the **`bitcoind`** group, has two members: the **`bitcoind`** service account and the **`administrator`** account. As the **`bitcoind`** service account already has all rights to the directory as an account owner, the specification of the rights for the group owner does not impact it. These rights, however, will matter to the **`administrator`** account. As you will want to be able to navigate the Bitcoin Core directory from your **`administrator`** account, you need to give the **`bitcoind`** group read and execution privileges to the directory. We will not set writing rights for the **`administrator`** account, as they are not really needed.  
+* Finally, any account that is not **`root`**, **`administrator`**, or **`bitcoind`** has no real business in the Bitcoin Core directory. Hence, other accounts should have no read, write, or execution permissions. 
 
 Read, write, and execution permissions are set in Linux using a numbering system. A 0 indicates no permissions, while a 7 indicates full permissions. Numbers in between have various intermediate meanings. The number 5 specifically indicates read and execution permissions. To specify the permissions as discussed above, you, therefore, need to execute the following instruction:
 
@@ -76,16 +76,16 @@ Read, write, and execution permissions are set in Linux using a numbering system
 
 The 750 instruction sets the privileges for the account owner, group owner, and everyone else respectively. 
 
-To verify all the instructions you just passed were incorporated successfully, you can execute **`$ ls -l`** again within the btc-server directory. You should now see that the Bitcoin Core directory has an account owner bitcoind and a group owner bitcoind. The permissions are specified in the initial part of the entry with the labels r (read), w (write), and x (execution) for the account owner, group owner, and everyone else, respectively (the "d" preceding the labels indicates that Bitcoin Core is a directory). 
+To verify all the instructions you just passed were incorporated successfully, you can execute **`$ ls -l`** again within the **`btc-server`** directory. You should now see that the Bitcoin Core directory has an account owner **`bitcoind`** and a group owner **`bitcoind`**. The permissions are specified in the initial part of the entry with the labels **`r`** (read), **`w`** (write), and **`x`** (execution) for the account owner, group owner, and everyone else, respectively (the **`d`** preceding the labels indicates that Bitcoin Core is a "directory"). 
 
 
 ## Creating the service file
 
-We will not sugarcoat anything: creating your own service files for applications is a giant pain in the ass. Many beginners spend a substantial amount of time looking through the Linux manual, blog posts, and stack exchange conversations when creating their first service files. Most of all, they tend to spend it breaking things.  
+We will not sugarcoat anything: creating your own service files for applications can be a giant pain in the ass. Many beginners spend a substantial amount of time looking through the Linux manual, blog posts, and stack exchange conversations when creating their first service files. Most of all, they tend to spend it breaking things.  
 
-If you have no experience with service files, we recommend you first become familiar with some of the basics in order to follow the discussion in this section better. There are many blog posts, articles, and videos online that can give you a good introduction.<sup>[1](#footnote1)</sup>
+If you have no experience with service files, we recommend you first become familiar with some of the basics before attempting this section. There are many blog posts, articles, and videos online that can give you a good introduction.<sup>[1](#footnote1)</sup>
 
-Once you understand some of the basics of service files, you can start by creating an empty Bitcoind service file in the **`/etc/systemd/system`** directory, where all administrator-created service files are typically placed. Proceed as follows:
+Once you understand the basics of service files, you can start by creating an empty Bitcoind service file in the **`/etc/systemd/system`** directory, where all administrator-created service files are typically placed. Proceed as follows:
 
 * Enter into the **`/etc/systemd/system`** directory
 * Execute the following instruction: **`$ sudo touch bitcoind.service>`**

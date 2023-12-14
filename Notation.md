@@ -1,5 +1,12 @@
 # Notation
 
+## Key terms
+
+Key terms are emphasized via boldface when they are first introduced and/or described. For instance, the term "bitcoind" would look as follows: **bitcoind**. You can find these terms within the *Glossary*.
+
+Typicall, the first introduction of the term would be accompanied by a further description. For exceptions, the term is emphasized both when it is introduced and when it is described. 
+
+
 ## Emphasized words and phrases
 
 Words and phrases are emphasized via boldface and italics. For instance, the phrase "Remember your password" would look as follows: ***Remember your password***. 
@@ -18,11 +25,6 @@ Any proper names related to your server or managing computer systems are formatt
 ## Sample configuration files
 
 Any sample configuration files are just written out in monospace.
-
-
-## Key terms
-
-Key terms are emphasized via boldface. For instance, the term "bitcoind" would look as follows: **bitcoind**. You can find these terms within the *Glossary*.
 
 
 ## Chapters and sections
