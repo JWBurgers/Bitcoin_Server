@@ -131,7 +131,11 @@ Your current view of the bitcoin repository will be in its latest state, which m
 
 ## Navigating the source code
 
-To view the whole Bitcoin Core repository (for **`v25.1`**), move into the **`bitcoin`** directory and execute **`$ ls -a`**. This will show all files and directories, including both hidden and unhidden. The Bitcoin Core codebase is involved and it takes even seasoned developers a long time to become intimately familiar with it. But let’s at least obtain a high-level impression of how the codebase is organized.
+To view the whole Bitcoin Core repository (for **`v25.1`**), move into the **`bitcoin`** directory and execute **`$ ls -a`**. This will show all files and directories, including both hidden and unhidden. 
+
+The Bitcoin Core codebase is involved and it takes even seasoned developers a long time to become intimately familiar with it. This is in part just due to the nature of the system, which requires accounting for a lot of edge cases. Another important factor is that simple code refactorizations are not accepted within the project. This is due to the sensitive nature of the software. So code refactorization is only acceptable if supportive of debugging or new features.
+
+But despite it's complex nature, let’s at least obtain a high-level impression of how the codebase is organized.
 
 The base directory includes several pieces of key documentation as well as configuration files and scripts required to build Bitcoin Core. You should familiarize yourself with the **`README`** and **`CONTRIBUTING`** documents to obtain a feel for the codebase and how changes are made. There are also various subdirectories within the base directory.
 
@@ -151,9 +155,9 @@ The **`.github`** directory has various standard files that can be utilized with
 
 The **`share`** directory contains generally helpful files that are distributed with the source code as well as the binaries. After building Bitcoin Core, for example, the directory includes a sample configuration file. 
 
-The **`src`** directory contains all the C++ source code for the project. The source code is used to create the main binaries such as bitcoind, bitcoin-wallet, and bitcoin-cli. It also contains the source code for the unit tests, as well as source code for the fuzz and util tests.
+The **`src`** directory contains all the C++ source code for the project. The source code is used to create the main binaries such as bitcoind, bitcoin-wallet, and bitcoin-cli. It also contains the source code for the unit tests, as well as source code for the fuzz tests.
 
-The **`test`** directory contains all the code for testing, not included in the **`src`** directory. This includes functional tests that examine the binary applications in their entirety (written in python and can be executed with the test-runner), the test-runners for the fuzz and util tests, and lint tests which can check your code for programmatic and stylistic errors before compilation. 
+The **`test`** directory contains all the code for testing, not included in the **`src`** directory. This includes functional tests that examine the binary applications in their entirety (written in python and can be executed with the test-runner) and the lint tests which can check your code for programmatic and stylistic errors before compilation. It also contains test-runners, including for the fuzz tests. 
 
 Bitcoin Core translations and localizations are managed using the Transifex platform. Anyone can create an account and make contributions to the translations/localizations via the platform. The configuration file (**`config`**) in the **`.tx`** directory maps the Bitcoin Core codebase into translatable components on the Transifex platform.  
 

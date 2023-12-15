@@ -321,6 +321,13 @@ As a last step, let's make a few stylistic changes to the comments, so everythin
 `rpcauth=administrator:[hex string]`  
 
 
+## Bitcoin Core wallet
+
+Bitcoin Core includes a wallet application. So technically you can already create and manage private keys, public keys, and addresses, as well as send and receive funds on the mainnet, directly from your server’s command line interface. You could also install the Bitcoin Core command line wallet or the GUI client on your managing computer, and connect it to your node. 
+
+While you are welcome to experiment with the Bitcoin Core wallet functionality, we would generally contend that there are alternatives that offer a superior user experience. In general, we would contend that Bitcoin Core is more about the node functionality, not about the wallet. In *Chapter 15*, we will explore two viable options for wallet applications: Sparrow and Specter.  
+
+
 ## Notes
 
 <a name="footnote1">1</a>. See, for example, Shell hacks, “Systemd service file examples”, March 20, 2018 (available at https://www.shellhacks.com/systemd-service-file-example/); Justin Ellingwood, “Systemd essentials: Working with services, units, and the journal”, April 20, 2015 (available at https://www.digitalocean.com/community/tutorials/systemd-essentials-working-with-services-units-and-the-journal). You can also consult the following three-part video series: BeginLinux Guru, “Systemd service files”, 2019 (part I is available at https://www.youtube.com/watch?v=xtIBJNZb1jE).  
