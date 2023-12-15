@@ -265,4 +265,6 @@ For Google, adding exceptions seems more complicated. You can import a certifica
 ** After moving through the wizard, fill in the following address in the address bar: **`chrome://flags/#allow-insecure-localhost`**. 
 ** Make sure you enable **`Allow invalid certificates for resources loaded from localhost.`**.
 
-If you now relaunch Chrome, you should be able to connect to the explorer without warnings if you use your server's IP address and port. Using the **`btc-server.local`** identifier will unfortunately still produce the warnings.   
+If you now relaunch Chrome, you should be able to connect to the explorer without warnings if you use your server's IP address and port. Using the **`btc-server.local`** identifier will unfortunately still produce the warnings.
+
+After importing the certificate into one or more of your browsers, just leave it on the desktop for now. 
