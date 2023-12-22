@@ -120,9 +120,6 @@ Pay attention particularly to the ExecStart item when copying. All the optionsâ€
 `RuntimeDirectory=bitcoind`
 `RuntimeDirectoryMode=0710`
 
-`ConfigurationDirectory=bitcoind`
-`ConfigurationDirectoryMode=0710`
-
 `StateDirectory=bitcoind`
 `StateDirectoryMode=0710`
 
@@ -158,7 +155,7 @@ Below we explain the meaning of the configuration options in the service file.
 - ***TimeoutStartSec=infinity***: This option specifies how long systemd should try to start up the service before considering the start up a failure and shutting it down. The selection of **`infinity`** here implies that this option is turned off for Bitcoind.
 - ***TimeoutStopSec=600***: This option specifies how long systemd should wait for a service to stop before forcibly shutting it down. The selection of "600" indicates that systemd will wait 10 minutes on the bitcoind service to stop properly. 
 - ***PermissionsStartOnly=true***: This option means that the permissions for the bitcoind service account are only applied to the ExecStart process.
-- ***ExecStartPre=/bin/chgrp bitcoind /etc/bitcoin***: This process executes before ExecStart. It ensures that the configuration file, which we will place in this directory, is accessible to the users of the **`bitcoind`** group (i.e., **`bitcoind`**, `**administrator`**, and `**root`**). 
+- ***ExecStartPre=/bin/chgrp bitcoind /etc/bitcoind***: This process executes before ExecStart. It ensures that the configuration file, which we will place in this directory, is accessible to the users of the **`bitcoind`** group (i.e., **`bitcoind`**, `**administrator`**, and `**root`**). 
 - ***User=bitcoind***: This specifies the service account for the Bitcoind application.
 - ***Group=bitcoind***: This specifies the user group for the Bitcoind application.
 - ***RuntimeDirectory=bitcoind***: This specifies a particular runtime directory to be created at the startup of your service. This directory will include your PID file. The directory is automatically removed when the service closes.

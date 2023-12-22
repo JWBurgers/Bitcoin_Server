@@ -106,9 +106,6 @@ The full specifications we would recommend for the service file are offered belo
 `RuntimeDirectory=btc-rpc-explorer`
 `RuntimeDirectoryMode=0710`
 
-`ConfigurationDirectory=btc-rpc-explorer`
-`ConfigurationDirectoryMode=0710`
-
 `StateDirectory=btc-rpc-explorer`
 `StateDirectoryMode=0710`
 

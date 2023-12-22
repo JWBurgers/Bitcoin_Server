@@ -241,9 +241,12 @@ fee-per-satoshi=10`
 `funding-confirms=3`
 
 `## Networking options`
-`# # The "addr" option is used to configure your inbound connections. The configured inbound connections are automatically announced to the network. We have set it twice here. The first setting ensures that your node listens for inbound IPv4 traffic on all network interfaces. The port number of "9735" is default. The second option instructs Lightningd to create a hidden service using the Tor service. The service will be static, meaning the address stays the same even after a restart of Lightningd. It is important that these two options are configured in the order below. The first option ensures that Lightningd also listens to port 9735 on the loopback address. This will be where the hidden service forwards inbound traffic to locally.`
-`addr=0.0.0.0:9735`
+`# The "bind-addr" option is used to bind listening addresses. The port number of "9735" is the default listening port.`  
+`bind-addr=0.0.0.0:9735`
+`# The "addr" option binds listening addresses and, if possible, also publicly announces it to the Lightning Network.`
 `addr=statictor:127.0.0.1:9051`
+`# This option announces listening addresses to the Lightning Network.` 
+`announce-addr=[Public IP address]:9735`
 `# This option sets the proxy for outbound connections using hidden service or standard Tor circuits.`
 `proxy=127.0.0.1:9050`
 `# This option can be set to "true" if you only want to make outbound connections via Tor hidden service or standard circuits. Setting it to "false" ensures you will make outbound connections both over Tor and clearnet.`
@@ -267,6 +270,12 @@ Running your Lightning node only via Tor does not quite have the same security c
 3. That your node makes outbound connections via ordinary Tor circuits to clearnet addresses
 4. That your node makes outbound connections to hidden services
 5. That your node makes outbound connections to clearnet addresses
+
+Specifically, the configuration settings work as follows. 
+
+* The **`bind-addr=0.0.0.0:9735`** option ensures that your node listens for inbound IPv4 traffic on all network interfaces. 
+* The **`addr=statictor:127.0.0.1:9051`** option instructs Lightningd to create a hidden service using the Tor service. The service will be static, meaning the address stays the same even after a restart of Lightningd. It is important that this option is set after the **`bind-addr=0.0.0.0:9735`** option to ensure that Lightningd also listens to port 9735 on the loopback address. This will be where the hidden service forwards inbound traffic to locally.
+* The **`announce-addr=[Public IP address]:Port`** configuration ensures that your clearnet IP address is announced to the rest of the Lightning Network. Unlike for the Tor hidden service, you cannot use the **`addr`** option to configure both the binding of your public IP address and announcing it to the network, unless you are running Core Lightning on a server that has its own public IP address.
 
 At this point, we have to take some steps to ensure that all these network configuration settings for Lightningd will work. 
 
