@@ -14,7 +14,7 @@ To start, you should have a look at your home router settings. You can find many
 6. Set your firewall settings to the highest possible level. (If you discover that this gives substantial issues down the line, you can lower them.)
 7. Update your router’s firmware to the latest version. Be careful during this process not to pull out the power, or you may **brick** your router. Router producers are not great at keeping their firmware updated, but definitely make updates if you can find them. 
 
-An additional good security practice is not to provide network access to guests. Everyone who has your wireless access point password can basically decrypt all your wireless communications unless you take additional measures. If you do really want to let guests use your home network, many routers typically have the option to broadcast a guest network with a different password. 
+An additional good security practice is not to provide direct network access to guests. Everyone who has your wireless access point password can basically decrypt all your wireless communications unless you take additional measures. If you do really want to let guests use your home network, many routers typically have the option to broadcast a guest network with a different password. 
 
 These points of attention above are not magic, but they will help you improve home network security.  
 
@@ -37,9 +37,9 @@ You will need to configure Fail2ban. As the configuration files that come with t
 Next, you need to make some changes to the **`jail.local`** configuration file. Proceed as follows:
 
 •	Open the **`jail.local`** file with a text editor (e.g., **`$ sudo nano jail.local`**). 
-•	Scroll down a bit and find the activated “bantime” entry. Change it to “30m”. This increases the length of time any IP address is banned from 10 to 30 minutes. 
-•	Set the “maxretry” parameter to “3”. This is the maximum number of times an IP address can try to log in unsuccesfully within a frame set by “findtime” (10 minutes by default).
-•	Set the “destemail” parameter to one of your e-mail addresses that you commonly use. The application will send you alerts when needed. 
+•	Scroll down a bit and find the activated **`bantime`** entry. Change it to **`30m`**. This increases the length of time any IP address is banned from 10 to 30 minutes. 
+•	Set the **`maxretry`** parameter to **`3`**. This is the maximum number of times an IP address can try to log in unsuccesfully within a frame set by **`findtime`** (10 minutes by default).
+•	Set the **`destemail`** parameter to one of your e-mail addresses that you commonly use. The application will send you alerts when needed. 
 •	Save and exit the **`jail.local`** file.
 
 While the configuration file of Fail2ban should work just fine for your purposes, you can also do much more with it such as blacklisting and whitelisting IP addresses. There are many good sources online if you would like to explore further.<sup>[1](#footnote1)</sup>
@@ -50,7 +50,7 @@ You will have to run Fail2ban as a Linux service. As with our firewall, it means
 
 You can check that it is working properly by executing **`$ sudo systemctl status fail2ban`**. This should output that the Fail2ban service is active. You can exit the status screen by pressing “Ctrl + c” on the keyboard.
 
-While fail2ban should just work out of the box, it may be the case that a package is missing which is causing it not to run. You should check the error messages from the instruction **`$ sudo systemctl status fail2ban`**. In our installations, we ran into problems because a package called "syslog" was not installed. If you run into problems, you could see if an installation resolves the problems. Execute the following commands:
+While fail2ban should just work out of the box, it may be the case that a package is missing which is causing it not to run. You should check the error messages from the instruction **`$ sudo systemctl status fail2ban`**. In our installations, we ran into problems because a package called **`syslog`** was not installed. If you run into problems, you could see if an installation resolves them. Execute the following commands:
 
 * **`$ sudo apt install syslog-ng`**
 * **`$ sudo systemctl restart fail2ban`**
@@ -79,12 +79,12 @@ Second, you will have to alter the way your operating system maintains logs. By 
 Using an application called **Log2ram**, we can mount this **`/var/log`** directory into RAM and, then, write our logs only periodically to the micro SD card. Proceed as follows:
 
 * Change into the home directory for the “administrator” account.
-* Check the Web address for the log2ram Github repository. It should be https://github.com/azlux/log2ram.git.
+* Check the Web address for the log2ram Github repository. It should be [https://github.com/azlux/log2ram.git](https://github.com/azlux/log2ram.git).
 * You probably don't yet have the Git application installed, so execute **`sudo apt install git`**. 
 * Execute the following command to copy the repository into your home directory from the Github repository: **`$ git clone https://github.com/azlux/log2ram.git>`**. 
 * Move into the **`log2ram`** directory you just created.
-* Execute the **`$ ls -l`** instruction to see the details of the files and directories. The install script (install.sh) should have execution permissions for the administrator account. If not, you have to alter them using the **`chmod`** command as follows: **`$ sudo chmod 770 install.sh`**.   
-* Execute the install script with the following instruction: **`$ sudo ./install.sh`**. The “./” is needed in front of the file name because this directory is not included in your system’s PATH variable. After installation, you should receive a message that the application will run automatically after rebooting. 
+* Execute the **`$ ls -l`** instruction to see the details of the files and directories. The install script (**`install.sh`**) should have execution permissions for the **`administrator`** account. If not, you have to alter them using the **`chmod`** command as follows: **`$ sudo chmod 770 install.sh`**.   
+* Execute the install script with the following instruction: **`$ sudo ./install.sh`**. The **`./`** is needed in front of the file name because this directory is not included in your system’s PATH variable. After installation, you should receive a message that the application will run automatically after rebooting. 
 * Open the configuration file for Log2ram using the nano text editor with the following instruction: **`$ sudo nano /etc/log2ram.conf`**. The default size of the RAM directory for your logs is 40 megabytes. Hopefully, you have at least 4GB of RAM or more (as per *Chapter 2* recommendations). You can change it to 100 megabytes. Save and close the file.
 * Reboot your Bitcoin server.
 
