@@ -20,8 +20,8 @@ This guide offers a recipe for making a homespun Bitcoin server. Your server wil
 
 *Chapters 7* through *19* turn your general server into a Bitcoin server. We will set up five core services, including **Bitcoin Core**, **Fulcrum**, **BTC Explorer**, **C-Lightning**, and **Ride the Lightning**. We will use two main supporting services for privacy and security, **Tor** and **NGINX**. We will additionally set up the following user interfaces to our server:
 
-* The **Sparrow** and **Specter** wallets on a local computer. These allow you to manage on-chain Bitcoin funds.
-* The web interface to our Bitcoin Explorer on a local computer. This allows you to explore Bitcoin transactions and addresses. 
+* The **Sparrow** and **Specter** wallets on a local computer. These allow you to manage on-chain bitcoin funds.
+* The web interface to our Bitcoin Explorer on a local computer. This allows you to explore on-chain bitcoin transactions and addresses. 
 * The web interface to our Ride the Lightning server on a local computer. This allows you to manage your lightning node, as well as make and receive Lightning payments. 
 * The **Zeus** wallet on your mobile phone. This allows you to make and receive Lightning payments on the go. 
 
@@ -37,9 +37,9 @@ Your Bitcoin server will eventually just run on its own and be managed remotely.
 
 ## Target audience
 
-This guide is really intended to be educational as much as practical. It caters primarily to students with a limited technical background. These can be undergraduate students in IT-related fields, as well as students from other fields. Throughout the discussion, we will spend a lot of time on ***why to do things*** rather than just ***how to do things*** precisely to help them. 
+This guide is really intended to be educational as much as practical. It caters primarily to students with a limited technical background. These can be undergraduate students in IT-related fields, as well as students from other fields. Throughout the discussion, we will spend a lot of time on ***why to do things*** rather than just ***how to do things*** precisely to help them. Particularly in the early chapters, we will share a lot of general background information to ensure accessiblity for people that are not so familiar with managing servers, Linux, and the command line environment. 
 
-While intended for students with limited technical backgrounds, anyone is, of course, free to profit from the contents of this guide. In case you are an IT specialist that wants to become more familiar with Bitcoin, you can skip and skim much of the discussion. You are also welcome to make tweaks to the instructions as you see fit. In case you are a more advanced reader, you should, however, be aware of various content that caters towards more advanced audiences. Some great examples are *Raspibolt: Beginner’s Guide to Lightning on a Raspberry Pi*.<sup>[1](#footnote1)</sup> and the *402 Payment Required*<sup>[2](#footnote2)</sup> Youtube channel. 
+While intended for students with limited technical backgrounds, anyone is, of course, free to profit from the contents of this guide. In case you are an IT specialist that wants to become more familiar with Bitcoin, you can skip and skim much of the discussion, particularly in the early chapters. You are also welcome to make tweaks to the instructions as you see fit. In case you are a more advanced reader, you should, however, be aware of various content that caters towards more advanced audiences. Some great examples are *Raspibolt: Beginner’s Guide to Lightning on a Raspberry Pi*.<sup>[1](#footnote1)</sup> and the *402 Payment Required*<sup>[2](#footnote2)</sup> Youtube channel. 
 
 
 ## After the guide

@@ -4,6 +4,7 @@ We will now build Bitcoin Core from the source code. The further configuration a
 
 Let's start with the question of why we should build Bitcoin Core in the first place. 
 
+
 ## Why build Bitcoin Core?
 
 The main executables or binaries offered by Bitcoin Core are **Bitcoind** (the “Bitcoin daemon”), **Bitcoin-cli** (the “Bitcoin command line interface”), **Bitcoin-wallet**, and **Bitcoin-Qt**. 
@@ -21,11 +22,11 @@ One option for obtaining these binaries on your system is to install them direct
 * PPC64 Linux: This contains a Bitcoin Core package for any Linux operating system which works with a 64-bit big-endian PowerPC and Power ISA processors.
 * Linux (Snapstore): This is a Snap file that will work on any Linux distribution. You download the Bitcoin Core Snap to your system, and just run it straight away.  
 
-There are many guides online that will show you how to install these executables directly. Importantly, after downloading any of these, you will want to ensure that your download—whether a tarball (i.e., tgz file), zip file, or snap file—is genuine by verifying the file through digital signatures made over a hash of the file. This verification process helps ensure that no errors were incurred in the download process and, more importantly, that no attackers tricked you into downloading a malicious file. 
+Importantly, if you install any of these directly, you will want to ensure that your download—whether a tarball (i.e., tgz file), zip file, or snap file—is genuine by verifying the file through digital signatures made over a hash of the file. This verification process helps ensure that no errors were incurred in the download process and, more importantly, that no attackers tricked you into downloading a malicious file. 
 
 You can also download a Bitcoin Core package with binaries from your APT repository. But we would recommend against this approach for two reasons. 
 
-1. Any failure by the repository maintainers to remain up to date can pose issues for your Bitcoin server, particularly when the updates concern security issues. Watching the Bitcoin Core web site and their twitter account for new releases is a better practice (see https://twitter.com/bitcoincoreorg). 
+1. Any failure by the repository maintainers to remain up to date can pose issues for your Bitcoin server, particularly when the updates concern security issues. Watching the Bitcoin Core web site and their twitter account for new releases is a better practice (see [https://twitter.com/bitcoincoreorg](https://twitter.com/bitcoincoreorg)). 
 2. Whenever Bitcoin has political moments—such as was the case during the Segwit Civil Wars in 2017—you can vote on your preferred protocols with your node. In this case, you do not want to rely on your APT for determining which version of Bitcoin Core you run. 
 
 Another approach to obtaining the main binaries from Bitcoin Core is to build them from source code.<sup>[1](#footnote1)</sup> There are several potential advantages to building Bitcoin Core from the source code. 
@@ -34,7 +35,7 @@ Another approach to obtaining the main binaries from Bitcoin Core is to build th
 * Building from the source code will allow you to experiment with the latest version of Bitcoin Core, not only the latest release.
 * Building from the source code will allow you to run tests on the codebase.
 
-So particularly for developers, building from source code has various advantages. But even if you are not a developer building from source code can be educational, so that is the path we will follow here. As everywhere else in this guide, we will assume that you are running Debian for the instructions. But if you are running a different Linux distribution, you can consult the build instructions in the documentation section of the code base for support [https://github.com/bitcoin/bitcoin/blob/master/doc/build-unix.md](https://github.com/bitcoin/bitcoin/blob/master/doc/build-unix.md).
+So particularly for developers, building from source code has various advantages. But even if you are not a developer building from source code can be educational, so that is the path we will follow here. In case you are running a different Linux distribution than Debian, you can consult the build instructions in the documentation section of the code base for support [https://github.com/bitcoin/bitcoin/blob/master/doc/build-unix.md](https://github.com/bitcoin/bitcoin/blob/master/doc/build-unix.md).
 
 
 ## Preliminaries
@@ -44,31 +45,31 @@ It is always good to ensure that your system is up to date before making any cha
 * **`$ sudo apt update`**
 * **`$ sudo apt upgrade`**
 
-Next, you will need to ensure that you have all the relevant building tools installed on your system. From the terminal window, proceed as follows:
+Next, you will need to install all the required building tools on your system. From the terminal window, proceed as follows:
 
 * **`$ sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3`**
 
-Once we have downloaded the source code from the Bitcoin Core Github repository, we will want to verify its authenticity. To do so, we will need to have **Git**, a version control system, and **GPG** (“GNU Privacy Guard”), an application for key management and signature validation, installed. Execute the following commands to ensure these applications are installed on your system:
+Once you have downloaded the source code from the Bitcoin Core Github repository, you will want to verify its authenticity. To do so, you will need to have **Git**, a version control system, and **GPG** (“GNU Privacy Guard”), an application for key management and signature validation, installed on your system. Install these applications with the following commands: 
 
 * **`$ sudo apt install git`**
 * **`$ sudo apt install gpg`**
 
 To clone the Bitcoin Core repository from Github onto your system, proceed as follows: 
 
-•	Move into your home directory.
-•	From the main page of the Bitcoin Core repository, click on the “Local” tab. 
+•	Move into your home directory on your server.
+•	From the main page of the Bitcoin Core repository [https://github.com/bitcoin/bitcoin.git](https://github.com/bitcoin/bitcoin.git), click on the **`Local`** tab. 
 •	Copy the link for HTTPS, which should be https://github.com/bitcoin/bitcoin.git). 
-•	Execute **`$ sudo git clone https://github.com/bitcoin/bitcoin.git`**
+•	On your server, execute **`$ sudo git clone https://github.com/bitcoin/bitcoin.git`**
 
-You should now see in your home directory a new directory called **`bitcoin`**. If you enter it, you will see the source code for Bitcoin Core. 
+After a moment, you should see a new directory called **`bitcoin`** in your home directory. Enter it and you will see the source code for Bitcoin Core. 
 
 While anyone can contribute to Bitcoin Core, only a few of these contributors have **commit access**—that is, the ability to merge code changes into the master branch. This is necessary, of course, otherwise the repository would turn into complete chaos. 
 
 All or some of the contributors with commit access will be active **maintainers** of the repository. Maintainers ensure that reviewed and approved code changes are indeed merged into the master branch. They also eliminate obvious spam pull requests. Not everyone with commit access is necessarily very active as a maintainer. 
 
-You should always take steps to verify that any source code you download is trustworthy. This is fairly straightforward with Bitcoin Core as all commits onto the master branch are signed by the maintainer that was responsible for the merge. Currently, a tool is being developed to verify the entire commit history (https://github.com/bitcoin/bitcoin/tree/master/contrib/verify-commits). You can explore this tool on your own. Here we will merely verify the signature on the latest release tag which should be sufficient. 
+You should always take steps to verify that any source code you download is trustworthy. This is fairly straightforward with Bitcoin Core as all commits onto the master branch are signed by the maintainer that was responsible for the merge. Currently, a tool is being developed to verify the entire commit history [https://github.com/bitcoin/bitcoin/tree/master/contrib/verify-commits](https://github.com/bitcoin/bitcoin/tree/master/contrib/verify-commits). You can explore this tool on your own. Here we will merely verify the signature on the latest release tag which should be sufficient. 
 
-You can view the PGP public key **fingerprints** of the current people with commit access in the “trusted-keys” file in the “contrib” directory (https://github.com/bitcoin/bitcoin/blob/master/contrib/verify-commits/trusted-keys). A fingerprint is used to conveniently verify the legitimacy of a public key from multiple sources. As of the current date of writing, there are only five fingerprints listed in the file:
+You can view the PGP public key **fingerprints** of the current people with commit access in the **`trusted-keys`** file in the **`contrib`** directory [https://github.com/bitcoin/bitcoin/blob/master/contrib/verify-commits/trusted-keys](https://github.com/bitcoin/bitcoin/blob/master/contrib/verify-commits/trusted-keys). A fingerprint is used to conveniently verify the legitimacy of a public key from multiple sources. As of the current date of writing, there are only five fingerprints listed in the file:
 
 * Michael Ford: E777 299F C265 DD04 7930 70EB 944D 35F9 AC3D B76A
 * Hennadii Stepanov: D1DB F2C4 B96F 2DEB F4C1 6654 4101 0811 2E7E A81F
@@ -76,36 +77,36 @@ You can view the PGP public key **fingerprints** of the current people with comm
 * Gloria Zhao: 6B00 2C6E A3F9 1B1B 0DF0 C9BC 8F61 7F12 00A6 D25C
 * Ryan Ofsky: 4D1B 3D5E CBA1 A7E0 5371 EEBE 4680 0E30 FC74 8A66
 
-You should first verify that the fingerprints listed in the “trusted-keys” file indeed belong to the purported identity. You can do this by matching the information in the file against other sources. 
+To verify source code releases, it is easiest just to have all these PGP keys on your GPG keychain. You should first verify that the fingerprints listed in the **`trusted-keys`** file indeed belong to the purported identities. You can do this by matching the information in the file against other sources. 
 
-To start, you can compare the fingerprints in the file against the fingerprints provided above. They should match. Additionally, you can consult other sources such as personal websites, Twitter accounts, and so on; often these will list people’s PGP fingerprints or **PGP IDs** (that is, the last 8 or 16 digits of their fingerprints). You can also verify the accuracy of the fingerprints listed in the file against online PGP key databases such as the Ubuntu keyserver (https://keyserver.ubuntu.com).
+To start, you can compare the fingerprints in the file against the fingerprints provided above. They should match. Additionally, you can consult other sources such as personal websites, Twitter accounts, and so on; often these will list people’s PGP fingerprints or **PGP IDs** (that is, the last 8 or 16 digits of their fingerprints). You can also verify the accuracy of the fingerprints listed in the file against online PGP key databases such as the Ubuntu keyserver [https://keyserver.ubuntu.com](https://keyserver.ubuntu.com).
 
-This first verification procedure is just to confirm that a particular identity is coupled to a particular PGP key. It is a way to protect against, for example, an attacker that may have compromised one of the maintainer accounts and replaced one of the fingerprints with one of their own in the Bitcoin Github repository. If you find different fingerprints for the same identity, there is a problem and you should not trust the current Bitcoin Core repository. You should first figure out what is going on, and if any accounts and keys have been compromised. 
+This verification procedure is just to confirm that a particular identity is coupled to a particular PGP key. It is a way to protect against, for example, an attacker that may have compromised one of the maintainer accounts and replaced one of the fingerprints with one of their own. If you find different fingerprints for the same identity, there is a problem and you should not trust the current Bitcoin Core repository. You should first figure out what is going on, and if any accounts and keys have been compromised. 
 
-To verify source code releases, it is easiest just to have the PGP keys for all the people with committ access on your GPG keychain. To add the five public keys belonging to the fingerprints above, you can follow the process, mutatis mutandis, as done for Michael Ford’s public key below:
+Once, you have verified the five public keys, you can add them to your GPG key ring. You can follow the process, mutatis mutandis, as done for Michael Ford’s public key below:
 
-•	Move into the **`~bitcoin/contrib/verify-commits`** directory
-•	Execute **`$ sudo cat trusted-keys`**
-•	Copy the key for Michael Ford and paste it into the following command: **`$ sudo gpg --keyserver keyserver.ubuntu.com --search E777299FC265DD04793070EB944D35F9AC3DB76A`**
-•	After executing the command, the output should confirm that the key that belongs to Michael Ford
-•	Enter “1” into the terminal and it will add the public key to your GPG key ring
+•	Move into the **`~bitcoin/contrib/verify-commits`** directory.
+•	Execute **`$ sudo cat trusted-keys`**.
+•	Copy the key for Michael Ford and paste it into the following command: **`$ sudo gpg --keyserver keyserver.ubuntu.com --search E777299FC265DD04793070EB944D35F9AC3DB76A`**.
+•	After executing the command, the output should confirm that the key that belongs to Michael Ford.
+•	Enter **`1`** into the terminal and it will add the public key to your GPG key ring.
 
-If you now execute **`$ sudo gpg --list-keys`**, you should see all five keypairs listed. By default, GPG assigns newly imported public keys a validity level of **`unknown`**. The validity level of a public key indicates your conviction about the trustworthiness of the key's owner. This is, of course, a somewhat thorny question: Can you actually trust these people not to commit erroneous or malicious code to the master branch? 
+If you now execute **`$ sudo gpg --list-keys`**, you should see all five keypairs listed. By default, GPG assigns newly imported public keys a validity level of **`unknown`**. The **validity level** of a public key indicates your conviction about the trustworthiness of the key's owner. This is, of course, a somewhat thorny question: Can you actually trust all these five individuals not to commit erroneous or malicious code to the master branch? 
 
 While you have probably never met any of the Bitcoin Core maintainers, you will see that each of them has a long history of contributing to the Github project. In addition, all pull requests are extensively reviewed and monitored by other contributors. Thus, any untoward behavior by maintainers typically would come to light quickly. So unless you see that fingerprints for the same identity from different sources do not match, you typically have little to worry about. 
 
 If you want to be conservative in trusting Bitcoin Core code, one strategy you can apply is to use older releases of Bitcoin Core. This is, of course, only a good strategy if you know the older release does not have known security issues (security patches are only pulled into the two major releases before the current release).    
 
-Leaving the default validity level of **`unknown`** in place will produce warnings each time you use that public key for the verification of Bitcoin Core releases. To change this validity attribute, you will first need your own public-private key pair. Proceed as follows:
+Leaving the default validity level of **`unknown`** in place will produce warnings each time you use that public key for the verification of Bitcoin Core releases. To change this validity attribute, you will first need your own private-public key pair. Proceed as follows:
 
-* Execute **`$ sudo gpg --full-generate-key`**
-* Select an **`RSA pair`** (option 1)
-* Set the security level at **`4096 bits`**
-* Select an expiration date (a good option is two years, i.e., **`$ 2y`**)
+* Execute **`$ sudo gpg --full-generate-key`**.
+* Select an **`RSA pair`** (option 1).
+* Set the security level at **`4096 bits`**.
+* Select an expiration date (a good option is two years, i.e., **`$ 2y`**).
 * Provide your name and an e-mail (you can use public_key_verification@GPG.com for clarity). In addition, provide a comment of **`Validity-level key pair`** to indicate that this key pair is only for managing your server's GPG public key ring and not for personal communication, signing code commits, and so on. You will not share any of this information about the key pair publicly.
-* Confirm with “O” for “okay”
+* Confirm with **`O`** for **`okay`**.
 * Choose a very secure password. Preferably this password is different from the one for your administrator profile or your root profile. You need this password to access your private key and make digital signatures.
-* **Add the password for your private key on your server record**.
+* ***Add the password for your private key to your server record***.
 * Type randomly on the keyboard until an RSA keypair has been generated.
 
 For any private-public key pair you create, the validity levels are automatically set to **`ultimate`**. To change the validity level of the other public keys on your key ring, you need to sign them with your own signing key. You can follow the process, mutatis mutandis, as done for Michael Ford’s public key below:
@@ -124,7 +125,7 @@ As a final step, you should now verify the commit of the latest release. Move in
 
 With regards to this particular version, you should see that the commit has a valid signature from Michael Ford. The valid signature may be different for other versions.  
 
-Your current view of the bitcoin repository will be in its latest state, which may be unstable. You should now move the state of the repository into **`v25.1`**. Execute the following command:
+Your current view of the Bitcoin repository will be in its latest state, which may be unstable. You should now move the state of the repository into **`v25.1`**. Execute the following command:
 
 * **`$ sudo git checkout v25.1`**
 
@@ -135,7 +136,7 @@ To view the whole Bitcoin Core repository (for **`v25.1`**), move into the **`bi
 
 The Bitcoin Core codebase is involved and it takes even seasoned developers a long time to become intimately familiar with it. This is in part just due to the nature of the system, which requires accounting for a lot of edge cases. Another important factor is that simple code refactorizations are not accepted within the project. This is due to the sensitive nature of the software. So code refactorization is only acceptable if supportive of debugging or new features.
 
-But despite it's complex nature, let’s at least obtain a high-level impression of how the codebase is organized.
+But despite its complex nature, let’s at least obtain a high-level impression of how the codebase is organized.
 
 The base directory includes several pieces of key documentation as well as configuration files and scripts required to build Bitcoin Core. You should familiarize yourself with the **`README`** and **`CONTRIBUTING`** documents to obtain a feel for the codebase and how changes are made. There are also various subdirectories within the base directory.
 
@@ -164,9 +165,9 @@ Bitcoin Core translations and localizations are managed using the Transifex plat
 
 ## Build dependencies
 
-Building Bitcoin Core requires various software dependencies. By relying on your system’s package manager during the build process, you cannot be sure that the versions it fetches for all these dependencies are fully compatible with the versions assumed by Bitcoin Core. So, there are advantages to building these dependencies yourself. That is what we will do here.
+Building Bitcoin Core requires various software dependencies. By relying on your system’s package manager during the build process, you cannot be sure that the versions it fetches for all these dependencies are fully compatible with the versions assumed by the Bitcoin Core source code. So, there are advantages to building these dependencies yourself. That is what we will do here.
 
-Move into the **`bitcoin/depends`** directory. Building the software dependencies assumes some further dependencies that may not all be installed on your system. You should at least ensure that **`curl`** and **`bison`** are installed by executing the following commands:
+Move into the **`bitcoin/depends`** directory on your server. Building the software dependencies assumes some further dependencies that may not all be installed on your system. You should at least ensure that **`curl`** and **`bison`** are installed by executing the following commands:
 
 * **`$ sudo apt install curl`**
 * **`$ sudo apt install bison`**
@@ -175,7 +176,7 @@ To start building the software dependencies for Bitcoin Core, now execute the fo
 
 	$ sudo make
 
-The build process should last quite a while. In case you run into issues during execution, it is likely because certain commands are unrecognized due to missing packages. By reading the error messages, you can figure out which packages are missing and install them. Once installed, it is better to clean up the binaries by executing **`$sudo make clean`** first. Afterwards, you can re-execute **`$ sudo make`** to build the dependencies successfully from scratch. 
+The build process should last quite a while. In case you run into issues during execution, it is likely because certain commands are unrecognized due to missing packages. By reading the error messages, you can figure out which packages are missing and install them. Once installed, it is better to clean up the binaries by executing **`$sudo make clean`** first. Afterwards, you can re-execute **`$ sudo make`** to build the dependencies again from scratch. 
 
 Once the build process has finished, you should see a new subdirectory within the **`bitcoin/depends`** directory called **`x86_64-pc-linux-gnu`** (with different operating systems and architectures, you will see a differently named directory). This directory houses all the dependencies. These binaries should stay in this directory. 
 
@@ -184,7 +185,7 @@ Once the build process has finished, you should see a new subdirectory within th
 
 We are now ready to build Bitcoin Core. 
 
-Move into the base directory of the bitcoin repository. Here you will see a file called **`autogen.sh`**. It contains a bash script that performs a number of actions. Most importantly, it will create a configuration script in the base directory called **`configure`**. This configuration script is, in turn, used to create a makefile. Execute the bash script **`autogen.sh`** as follows:
+Move into the base of the **`bitcoin`** directory. Here you will see a file called **`autogen.sh`**. It contains a bash script that performs a number of actions. Most importantly, it will create a configuration script in the base directory called **`configure`**. This configuration script is, in turn, used to create a **makefile**. Execute the bash script **`autogen.sh`** as follows:
 
 * **`$ sudo ./autogen.sh`**
 
@@ -194,7 +195,7 @@ After completion, you should see the **`configure`** file for your makefile in t
 
 By default, the configuration script ignores the dependencies you built in the previous section and fetches them with the package manager. So we need to ensure that the configuration script knows about their location and points to them in the makefile. In addition, all the main user binaries for Bitcoin Core will by default be stored in the **`/usr/bin directory`** at the end of the build process. For convenience, we will instead create these binaries in a **`bitcoin-core`** directory within our **`btc-server`** server directory. Proceed as follows:
 
-* Move into the **`btc-server`** directory and execute **`$ mkdir bitcoin-core`**. You should not require the "sudo" modifier to make changes in this directory. 
+* Move into the **`/btc-server`** directory and execute **`$ mkdir bitcoin-core`**. You should not require the **`sudo`** modifier to make changes in this directory. 
 * Move back into the **`bitcoin`** directory within your home directory. 
 * Now execute **`$ sudo CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure --bindir /btc-server/bitcoin-core/bin`**
 
