@@ -379,3 +379,5 @@ The first command should output the peers to which you have made outbound connec
 * **`$ sudo tail -n 100 log`**
 
 You should see in the log that you are acquiring network information from the peers to which you have made outbound connections.
+
+To explore commands on your own with the command line tool, you can consult the following cheat sheet: [https://github.com/grubles/cln-cheatsheet](https://github.com/grubles/cln-cheatsheet). 

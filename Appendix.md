@@ -1,4 +1,4 @@
-# Appendix: Server Record Template
+# Appendix: Server record template
 
 This overview contains all the details regarding my Bitcoin Server.
 
@@ -6,6 +6,7 @@ This overview contains all the details regarding my Bitcoin Server.
 
 Host name: 
 Static IPv4 address server: 
+Local domain name: 
 Router and DNS address: 
 Static IPv4 address managing computer: 
 Bitcoin services directory: 
