@@ -192,7 +192,7 @@ Move into the **`/etc/nginx`** directory and open the **`nginx.conf`** file. Wit
 `proxy_pass btc-rpc-explorer;`
 
 `ssl_certificate /etc/ssl/certs/nginx.crt;`
-`ssl_certificate_key /etc/ssl/private/nginx.key;`
+`ssl_certificate_key /etc/ssl/private/nginx-key.pem;`
 
 `ssl_session_cache shared:SSL:5m;`
 `ssl_session_timeout 4h;`
